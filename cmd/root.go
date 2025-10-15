@@ -36,7 +36,10 @@ func Execute() {
 		case "ip":
 			display.ClearScreen()
 			display.ShowHeader()
-			display.PrintInfo("IP Information feature coming soon...")
+			err := network.ShowIPInformation()
+			if err != nil {
+				display.PrintError(fmt.Sprintf("Failed to show IP information: %v", err))
+			}
 			display.PauseForUser("")
 			
 		case "dns":
