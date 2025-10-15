@@ -45,7 +45,10 @@ func Execute() {
 		case "dns":
 			display.ClearScreen()
 			display.ShowHeader()
-			display.PrintInfo("DNS Servers feature coming soon...")
+			err := network.ShowDNSInformation()
+			if err != nil {
+				display.PrintError(fmt.Sprintf("Failed to show DNS information: %v", err))
+			}
 			display.PauseForUser("")
 			
 		case "gateway":
