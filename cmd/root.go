@@ -63,7 +63,10 @@ func Execute() {
 		case "routes":
 			display.ClearScreen()
 			display.ShowHeader()
-			display.PrintInfo("Routing Table feature coming soon...")
+			err := network.ShowRoutingTable()
+			if err != nil {
+				display.PrintError(fmt.Sprintf("Failed to show routing table: %v", err))
+			}
 			display.PauseForUser("")
 			
 		case "connections":
