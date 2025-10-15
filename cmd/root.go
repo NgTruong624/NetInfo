@@ -54,7 +54,10 @@ func Execute() {
 		case "gateway":
 			display.ClearScreen()
 			display.ShowHeader()
-			display.PrintInfo("Default Gateway feature coming soon...")
+			err := network.ShowGatewayInformation()
+			if err != nil {
+				display.PrintError(fmt.Sprintf("Failed to show gateway information: %v", err))
+			}
 			display.PauseForUser("")
 			
 		case "routes":
