@@ -65,12 +65,47 @@ var MainMenuItems = []MenuItem{
 	},
 }
 
+var ConnectionsMenuItems = []MenuItem{
+	{
+		Label: "All Connections",
+		Value: "all",
+		Desc:  "Show all active network connections",
+	},
+	{
+		Label: "Listening Ports",
+		Value: "listening",
+		Desc:  "Show only listening ports",
+	},
+	{
+		Label: "By Process",
+		Value: "by_process",
+		Desc:  "Group connections by process",
+	},
+	{
+		Label: "Back to Main Menu",
+		Value: "back",
+		Desc:  "Return to main menu",
+	},
+}
+
 // ShowMainMenu displays the main interactive menu
 func ShowMainMenu() (string, error) {
 	config := &MenuConfig{
 		Label:    "Select an option",
 		Items:    MainMenuItems,
 		Size:     8,
+		Selected: "",
+	}
+	
+	return ShowMenu(config)
+}
+
+// ShowConnectionsMenu displays the connections submenu
+func ShowConnectionsMenu() (string, error) {
+	config := &MenuConfig{
+		Label:    "Select connection view",
+		Items:    ConnectionsMenuItems,
+		Size:     4,
 		Selected: "",
 	}
 	
