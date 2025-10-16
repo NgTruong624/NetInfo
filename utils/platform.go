@@ -27,17 +27,9 @@ func CommandWithTimeout(ctx context.Context, timeout time.Duration, name string,
 }
 
 // ExecuteCommand is a convenience function that executes a command with default timeout.
-func ExecuteCommand(name string, args ...string) ([]byte, error) {
-	ctx := context.Background()
-	return CommandWithTimeout(ctx, 30*time.Second, name, args...)
-}
+// (removed) ExecuteCommand: unused helper
 
 // GetShell returns the appropriate shell for the current platform.
-func GetShell() (string, []string) {
-	if IsWindows() {
-		return "powershell", []string{"-NoProfile", "-Command"}
-	}
-	return "sh", []string{"-c"}
-}
+// (removed) GetShell: unused helper
 
 

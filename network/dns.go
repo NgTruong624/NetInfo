@@ -342,25 +342,4 @@ func IsValidDNS(ip string) bool {
 }
 
 // ShowDNSResolutionTest provides an interactive DNS resolution test
-func ShowDNSResolutionTest() error {
-	display.PrintInfo("DNS Resolution Test")
-	display.PrintSeparator()
-	
-	// Test common hostnames
-	testHostnames := []string{
-		"google.com",
-		"cloudflare.com",
-		"microsoft.com",
-		"example.com",
-	}
-	
-	for _, hostname := range testHostnames {
-		err := TestDNSResolution(hostname)
-		if err != nil {
-			display.PrintWarning(fmt.Sprintf("Failed to resolve %s", hostname))
-		}
-		display.PrintSeparator()
-	}
-	
-	return nil
-}
+// (removed) ShowDNSResolutionTest: unused in application

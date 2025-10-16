@@ -2,7 +2,6 @@ package utils
 
 import (
 	"fmt"
-	"strings"
 	"time"
 )
 
@@ -28,37 +27,10 @@ func FormatDuration(d time.Duration) string {
 }
 
 // FormatBytes formats bytes into a human-readable string.
-func FormatBytes(bytes int64) string {
-	const unit = 1024
-	if bytes < unit {
-		return fmt.Sprintf("%d B", bytes)
-	}
-	div, exp := int64(unit), 0
-	for n := bytes / unit; n >= unit; n /= unit {
-		div *= unit
-		exp++
-	}
-	return fmt.Sprintf("%.1f %cB", float64(bytes)/float64(div), "KMGTPE"[exp])
-}
+// (removed) FormatBytes: unused helper
 
 // CleanString removes extra whitespace and newlines from a string.
-func CleanString(s string) string {
-	// Replace multiple whitespace with single space
-	s = strings.ReplaceAll(s, "\t", " ")
-	s = strings.ReplaceAll(s, "\n", " ")
-	s = strings.ReplaceAll(s, "\r", " ")
-	
-	// Split by spaces, remove empty strings, join back
-	parts := strings.Fields(s)
-	return strings.Join(parts, " ")
-}
+// (removed) CleanString: unused helper
 
 // ContainsAny checks if the string contains any of the given substrings.
-func ContainsAny(s string, substrings ...string) bool {
-	for _, substr := range substrings {
-		if strings.Contains(s, substr) {
-			return true
-		}
-	}
-	return false
-}
+// (removed) ContainsAny: unused helper

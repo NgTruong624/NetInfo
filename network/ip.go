@@ -324,20 +324,7 @@ func getString(m map[string]interface{}, key string) string {
 }
 
 // GetPrimaryLocalIP returns the primary local IP (usually the first non-loopback IPv4)
-func GetPrimaryLocalIP() (string, error) {
-	localIPs, err := GetLocalIPs()
-	if err != nil {
-		return "", err
-	}
-	
-	for _, ipInfo := range localIPs {
-		if ipInfo.IPv4 != "" {
-			return ipInfo.IPv4, nil
-		}
-	}
-	
-	return "", fmt.Errorf("no IPv4 address found")
-}
+// (removed) GetPrimaryLocalIP: unused in application
 
 // IsPrivateIP checks if an IP address is private
 func IsPrivateIP(ip string) bool {

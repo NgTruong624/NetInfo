@@ -100,7 +100,7 @@ var PingMenuItems = []MenuItem{
 		Desc:  "Test connectivity to multiple common hosts",
 	},
 	{
-		Label: "Comprehensive Test",
+		Label: "Comprehensive Test",	
 		Value: "comprehensive",
 		Desc:  "Test local, gateway, DNS, and internet connectivity",
 	},
@@ -195,36 +195,10 @@ func ShowInput(label, defaultValue string) (string, error) {
 }
 
 // ShowConfirm prompts for yes/no confirmation
-func ShowConfirm(label string) (bool, error) {
-	prompt := promptui.Prompt{
-		Label:     label,
-		IsConfirm: true,
-		Default:   "y",
-	}
-
-	result, err := prompt.Run()
-	if err != nil {
-		return false, err
-	}
-
-	return result == "y" || result == "Y" || result == "yes", nil
-}
+// (removed) ShowConfirm: unused in application
 
 // ShowPassword prompts for password input (hidden)
-func ShowPassword(label string) (string, error) {
-	prompt := promptui.Prompt{
-		Label: label,
-		Mask:  '*',
-		Validate: func(input string) error {
-			if len(input) == 0 {
-				return fmt.Errorf("password cannot be empty")
-			}
-			return nil
-		},
-	}
-
-	return prompt.Run()
-}
+// (removed) ShowPassword: unused in application
 
 // PauseForUser waits for user to press Enter
 func PauseForUser(message string) {

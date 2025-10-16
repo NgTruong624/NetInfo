@@ -440,45 +440,7 @@ func GetDefaultGateway(ipVersion string) (*GatewayInfo, error) {
 }
 
 // TestGatewayConnectivity tests connectivity to the default gateway
-func TestGatewayConnectivity() error {
-	display.PrintInfo("Testing gateway connectivity...")
-	
-	// Test IPv4 gateway
-	ipv4Gateway, err := GetDefaultGateway("IPv4")
-	if err != nil {
-		display.PrintWarning("No IPv4 default gateway found")
-	} else {
-		display.PrintInfo(fmt.Sprintf("Testing IPv4 gateway: %s", ipv4Gateway.Gateway))
-		
-		// Simple ping test using Go's net package
-		conn, err := net.DialTimeout("tcp", ipv4Gateway.Gateway+":80", 3*time.Second)
-		if err != nil {
-			display.PrintWarning(fmt.Sprintf("Cannot reach IPv4 gateway %s: %v", ipv4Gateway.Gateway, err))
-		} else {
-			conn.Close()
-			display.PrintSuccess(fmt.Sprintf("IPv4 gateway %s is reachable", ipv4Gateway.Gateway))
-		}
-	}
-	
-	// Test IPv6 gateway
-	ipv6Gateway, err := GetDefaultGateway("IPv6")
-	if err != nil {
-		display.PrintWarning("No IPv6 default gateway found")
-	} else {
-		display.PrintInfo(fmt.Sprintf("Testing IPv6 gateway: %s", ipv6Gateway.Gateway))
-		
-		// Simple connectivity test
-		conn, err := net.DialTimeout("tcp6", "["+ipv6Gateway.Gateway+"]:80", 3*time.Second)
-		if err != nil {
-			display.PrintWarning(fmt.Sprintf("Cannot reach IPv6 gateway %s: %v", ipv6Gateway.Gateway, err))
-		} else {
-			conn.Close()
-			display.PrintSuccess(fmt.Sprintf("IPv6 gateway %s is reachable", ipv6Gateway.Gateway))
-		}
-	}
-	
-	return nil
-}
+// (removed) TestGatewayConnectivity: unused in application
 
 // IsValidGateway checks if an IP address is a valid gateway
 func IsValidGateway(ip string) bool {

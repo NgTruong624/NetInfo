@@ -110,7 +110,7 @@ func ShowRoutingTable() error {
 	}
 	
 	display.PrintInfo(fmt.Sprintf("  • Total routes: %d", len(routeConfig.Routes)))
-	display.PrintInfo(fmt.Sprintf("  • Routes by interface:"))
+    display.PrintInfo("  • Routes by interface:")
 	
 	// Sort interfaces by route count
 	var interfaces []string
@@ -373,91 +373,10 @@ func parseLinuxProcNetRoute() (*RouteConfig, error) {
 }
 
 // GetRoutesByInterface returns routes for a specific interface
-func GetRoutesByInterface(interfaceName string) ([]RouteInfo, error) {
-	routeConfig, err := getWindowsRoutes()
-	if utils.IsLinux() {
-		routeConfig, err = getLinuxRoutes()
-	}
-	
-	if err != nil {
-		return nil, err
-	}
-	
-	var interfaceRoutes []RouteInfo
-	for _, route := range routeConfig.Routes {
-		if route.Interface == interfaceName {
-			interfaceRoutes = append(interfaceRoutes, route)
-		}
-	}
-	
-	return interfaceRoutes, nil
-}
+// (removed) GetRoutesByInterface: unused in application
 
 // GetDefaultRoutes returns all default routes
-func GetDefaultRoutes() ([]RouteInfo, error) {
-	routeConfig, err := getWindowsRoutes()
-	if utils.IsLinux() {
-		routeConfig, err = getLinuxRoutes()
-	}
-	
-	if err != nil {
-		return nil, err
-	}
-	
-	var defaultRoutes []RouteInfo
-	for _, route := range routeConfig.Routes {
-		if route.Type == "Default" {
-			defaultRoutes = append(defaultRoutes, route)
-		}
-	}
-	
-	return defaultRoutes, nil
-}
+// (removed) GetDefaultRoutes: unused in application
 
 // ShowRouteSummary displays a summary of the routing table
-func ShowRouteSummary() error {
-	display.PrintInfo("Generating routing table summary...")
-	
-	routeConfig, err := getWindowsRoutes()
-	if utils.IsLinux() {
-		routeConfig, err = getLinuxRoutes()
-	}
-	
-	if err != nil {
-		return err
-	}
-	
-	if len(routeConfig.Routes) == 0 {
-		display.PrintWarning("No routes found")
-		return nil
-	}
-	
-	// Count by type
-	typeCount := make(map[string]int)
-	for _, route := range routeConfig.Routes {
-		typeCount[route.Type]++
-	}
-	
-	// Count by protocol
-	protocolCount := make(map[string]int)
-	for _, route := range routeConfig.Routes {
-		protocolCount[route.Protocol]++
-	}
-	
-	display.PrintSuccess("Routing Table Summary")
-	display.PrintSeparator()
-	
-	display.PrintInfo(fmt.Sprintf("Total routes: %d", len(routeConfig.Routes)))
-	
-	display.PrintInfo("Routes by type:")
-	for routeType, count := range typeCount {
-		display.PrintInfo(fmt.Sprintf("  • %s: %d", routeType, count))
-	}
-	
-	display.PrintInfo("Routes by protocol:")
-	for protocol, count := range protocolCount {
-		display.PrintInfo(fmt.Sprintf("  • %s: %d", protocol, count))
-	}
-	
-	return nil
-}
+// (removed) ShowRouteSummary: unused in application
