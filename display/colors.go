@@ -33,7 +33,7 @@ func PrintBanner() {
 	banner := `
 ╔══════════════════════════════════════════════════════════════╗
 ║                        NetInfo Tool                          ║
-║              Network Information & Diagnostics               ║
+║                       DIY by Etouuu                          ║
 ╚══════════════════════════════════════════════════════════════╝
 `
 	color.New(color.FgCyan, color.Bold).Print(banner)
