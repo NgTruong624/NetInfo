@@ -6,6 +6,7 @@ import (
 
 	"netinfo/display"
 	"netinfo/network"
+	"netinfo/utils"
 )
 
 // Execute is the entrypoint invoked by main.
@@ -18,7 +19,8 @@ mainLoop:
 		// Show main menu and get user choice
 		choice, err := display.ShowMainMenu()
 		if err != nil {
-			display.PrintError(fmt.Sprintf("Menu error: %v", err))
+			userMsg := utils.GetUserFriendlyMessage(err)
+			display.PrintError(userMsg)
 			display.PauseForUser("")
 			continue
 		}

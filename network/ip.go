@@ -104,32 +104,36 @@ func GetLocalIPs() ([]IPInfo, error) {
 
 // GetPublicIP retrieves public IP address with fallback endpoints
 func GetPublicIP() (string, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), utils.PublicIPTimout)
 	defer cancel()
 	
 	client := &http.Client{
-		Timeout: 5 * time.Second,
+		Timeout: utils.HTTPTimeout,
 	}
 	
+	var lastErr error
 	for _, endpoint := range PublicIPEndpoints {
 		select {
 		case <-ctx.Done():
-			return "", fmt.Errorf("timeout while getting public IP")
+			return "", utils.WrapError(nil, utils.ErrPublicIP, utils.ErrorTypeTimeout)
 		default:
 		}
 		
 		req, err := http.NewRequestWithContext(ctx, "GET", endpoint, nil)
 		if err != nil {
+			lastErr = utils.WrapError(err, "Failed to create request", utils.ErrorTypeNetwork)
 			continue
 		}
 		
 		resp, err := client.Do(req)
 		if err != nil {
+			lastErr = utils.WrapError(err, "Request failed", utils.ErrorTypeNetwork)
 			continue
 		}
 		
 		if resp.StatusCode != http.StatusOK {
 			resp.Body.Close()
+			lastErr = utils.WrapError(nil, fmt.Sprintf("HTTP %d", resp.StatusCode), utils.ErrorTypeNetwork)
 			continue
 		}
 		
@@ -137,6 +141,7 @@ func GetPublicIP() (string, error) {
 		resp.Body.Close()
 		
 		if err != nil {
+			lastErr = utils.WrapError(err, "Failed to read response", utils.ErrorTypeParse)
 			continue
 		}
 		
@@ -147,9 +152,16 @@ func GetPublicIP() (string, error) {
 		if net.ParseIP(publicIP) != nil {
 			return publicIP, nil
 		}
+		
+		lastErr = utils.WrapError(nil, "Invalid IP address received", utils.ErrorTypeParse)
 	}
 	
-	return "", fmt.Errorf("failed to get public IP from all endpoints")
+	// If we get here, all endpoints failed
+	if lastErr != nil {
+		return "", utils.WrapError(lastErr, utils.ErrPublicIP, utils.ErrorTypeNetwork)
+	}
+	
+	return "", utils.WrapError(nil, utils.ErrPublicIP, utils.ErrorTypeNetwork)
 }
 
 // GetPublicIPWithService tries to get public IP from a specific service
@@ -216,18 +228,19 @@ func GetIPLocation(ip string) (map[string]interface{}, error) {
 
 // ShowIPInformation displays comprehensive IP information
 func ShowIPInformation() error {
-	display.PrintInfo("Gathering IP address information...")
+	display.PrintInfo(utils.MsgGatheringInfo)
 	
 	// Get local IPs
 	localIPs, err := GetLocalIPs()
 	if err != nil {
-		display.PrintError(fmt.Sprintf("Failed to get local IPs: %v", err))
+		userMsg := utils.GetUserFriendlyMessage(err)
+		display.PrintError(userMsg)
 		return err
 	}
 	
 	// Display local IPs
 	if len(localIPs) == 0 {
-		display.PrintWarning("No local IP addresses found")
+		display.PrintWarning(utils.MsgNoIPs)
 	} else {
 		display.PrintSuccess(fmt.Sprintf("Found %d network interfaces with IP addresses", len(localIPs)))
 		
@@ -262,8 +275,9 @@ func ShowIPInformation() error {
 	display.PrintInfo("Getting public IP address...")
 	publicIP, err := GetPublicIP()
 	if err != nil {
-		display.PrintError(fmt.Sprintf("Failed to get public IP: %v", err))
-		display.PrintWarning("This might be due to network connectivity issues")
+		userMsg := utils.GetUserFriendlyMessage(err)
+		display.PrintError(userMsg)
+		display.PrintWarning(utils.MsgTryAgain)
 	} else {
 		display.PrintSuccess(fmt.Sprintf("Public IP: %s", display.IP(publicIP)))
 		

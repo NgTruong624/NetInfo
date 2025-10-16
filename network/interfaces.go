@@ -1,6 +1,7 @@
 package network
 
 import (
+	"context"
 	"fmt"
 	"net"
 	"strings"
@@ -26,10 +27,14 @@ type InterfaceInfo struct {
 func GetNetworkInterfaces() ([]InterfaceInfo, error) {
 	var interfaces []InterfaceInfo
 	
-	// Get interfaces using gopsutil
-	psInterfaces, err := psnet.Interfaces()
+	// Create context with timeout
+	ctx, cancel := context.WithTimeout(context.Background(), utils.NetworkTimeout)
+	defer cancel()
+	
+	// Get interfaces using gopsutil with context
+	psInterfaces, err := psnet.InterfacesWithContext(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get network interfaces: %v", err)
+		return nil, utils.WrapError(err, utils.ErrNetworkInterfaces, utils.ErrorTypeNetwork)
 	}
 	
 	for _, psInterface := range psInterfaces {
@@ -66,7 +71,7 @@ func GetNetworkInterfacesDetailed() ([]InterfaceInfo, error) {
 	// Get system interfaces using Go standard library
 	systemInterfaces, err := net.Interfaces()
 	if err != nil {
-		return nil, fmt.Errorf("failed to get system interfaces: %v", err)
+		return nil, utils.WrapError(err, utils.ErrNetworkInterfaces, utils.ErrorTypeNetwork)
 	}
 	
 	for _, iface := range systemInterfaces {
@@ -155,16 +160,24 @@ func GetActiveInterfaces() ([]InterfaceInfo, error) {
 
 // ShowNetworkInterfaces displays network interfaces in a formatted table
 func ShowNetworkInterfaces() error {
-	display.PrintInfo("Gathering network interface information...")
+	display.PrintInfo(utils.MsgGatheringInfo)
 	
 	interfaces, err := GetNetworkInterfaces()
 	if err != nil {
-		display.PrintError(fmt.Sprintf("Failed to get network interfaces: %v", err))
-		return err
+		userMsg := utils.GetUserFriendlyMessage(err)
+		display.PrintError(userMsg)
+		
+		// Try fallback method if primary fails
+		display.PrintInfo("Attempting alternative method...")
+		interfaces, err = GetNetworkInterfacesDetailed()
+		if err != nil {
+			display.PrintError(utils.GetUserFriendlyMessage(err))
+			return err
+		}
 	}
 	
 	if len(interfaces) == 0 {
-		display.PrintWarning("No network interfaces found")
+		display.PrintWarning(utils.MsgNoInterfaces)
 		return nil
 	}
 	
