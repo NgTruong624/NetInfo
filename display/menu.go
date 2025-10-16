@@ -88,6 +88,29 @@ var ConnectionsMenuItems = []MenuItem{
 	},
 }
 
+var PingMenuItems = []MenuItem{
+	{
+		Label: "Single Host Ping",
+		Value: "single",
+		Desc:  "Ping a specific host with custom settings",
+	},
+	{
+		Label: "Multiple Hosts Ping",
+		Value: "multiple",
+		Desc:  "Test connectivity to multiple common hosts",
+	},
+	{
+		Label: "Comprehensive Test",
+		Value: "comprehensive",
+		Desc:  "Test local, gateway, DNS, and internet connectivity",
+	},
+	{
+		Label: "Back to Main Menu",
+		Value: "back",
+		Desc:  "Return to main menu",
+	},
+}
+
 // ShowMainMenu displays the main interactive menu
 func ShowMainMenu() (string, error) {
 	config := &MenuConfig{
@@ -105,6 +128,18 @@ func ShowConnectionsMenu() (string, error) {
 	config := &MenuConfig{
 		Label:    "Select connection view",
 		Items:    ConnectionsMenuItems,
+		Size:     4,
+		Selected: "",
+	}
+	
+	return ShowMenu(config)
+}
+
+// ShowPingMenu displays the ping submenu
+func ShowPingMenu() (string, error) {
+	config := &MenuConfig{
+		Label:    "Select ping test type",
+		Items:    PingMenuItems,
 		Size:     4,
 		Selected: "",
 	}

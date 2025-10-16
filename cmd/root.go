@@ -120,10 +120,53 @@ mainLoop:
 			}
 			
 		case "ping":
-			display.ClearScreen()
-			display.ShowHeader()
-			display.PrintInfo("Ping Test feature coming soon...")
-			display.PauseForUser("")
+			for {
+				display.ClearScreen()
+				display.ShowHeader()
+				
+				choice, err := display.ShowPingMenu()
+				if err != nil {
+					display.PrintError(fmt.Sprintf("Menu error: %v", err))
+					display.PauseForUser("")
+					continue
+				}
+				
+				switch choice {
+				case "single":
+					display.ClearScreen()
+					display.ShowHeader()
+					err := network.ShowPingTest()
+					if err != nil {
+						display.PrintError(fmt.Sprintf("Failed to run ping test: %v", err))
+					}
+					display.PauseForUser("")
+					
+				case "multiple":
+					display.ClearScreen()
+					display.ShowHeader()
+					err := network.ShowPingMultipleHosts()
+					if err != nil {
+						display.PrintError(fmt.Sprintf("Failed to run multiple ping test: %v", err))
+					}
+					display.PauseForUser("")
+					
+				case "comprehensive":
+					display.ClearScreen()
+					display.ShowHeader()
+					err := network.TestConnectivity()
+					if err != nil {
+						display.PrintError(fmt.Sprintf("Failed to run comprehensive test: %v", err))
+					}
+					display.PauseForUser("")
+					
+				case "back":
+					goto mainLoop
+					
+				default:
+					display.PrintWarning("Invalid choice. Please try again.")
+					display.PauseForUser("")
+				}
+			}
 			
 		case "exit":
 			display.ClearScreen()
